@@ -15,83 +15,88 @@ Applications via Engineering Software 2.0 and 3.0*.
 
 ## 1. Syllabus
 
-Seven notebooks, meant to be run in order. Each opens in Colab from the badge at its top, and
-each begins with the same setup block: install, load your key, build a client. The only
-prerequisite is a free Gemini API key, which Part 0 walks through.
+The course is seven notebooks, meant to be run in order. Each one opens in Colab and begins with
+the same setup block, which installs the packages it needs, loads your API key, and builds a
+client. The only prerequisite is a free Gemini API key, which Part 0 covers.
 
-Parts 1 to 5 are organised around one question — **who decides what happens next?** Part 6 is
-where that gets pointed at a real problem.
+Parts 1 through 5 each cover a different way of deciding what an agent should do next. Part 6
+applies the first of those patterns to a finite element problem.
 
 ---
 
 ### [Part 0 — Getting API access](notebooks/00_api_access.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/00_api_access.ipynb)
 
-What an API key is, and why calling a model from Python is a different thing from typing into a
-chat window. Create a free Gemini key, store it in the Colab Secrets panel, build the `client`,
-and send one prompt. Closes with drop-in replacement cells for Anthropic and OpenAI, and a live
-listing of the models your key can actually reach.
+This notebook explains what an API key is and how calling a model from Python differs from
+typing into a chat window. It walks through creating a free Gemini key, storing it in the Colab
+Secrets panel, building a client object, and sending a single prompt to confirm that the setup
+works. It also provides replacement cells for Anthropic and OpenAI, and a cell that lists the
+models your key can reach.
 
 *18 cells · installs `google-genai`, `google-auth`*
 
 ### [Part 1 — ReAct](notebooks/01_react.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/01_react.ipynb)
 
-**The model decides.** What an agent is: a model in a loop with tools it can ask you to run. A
-tool is a Python function plus a JSON schema, and the schema is the only thing the model can
-see. Build the ReAct loop from scratch in about thirty lines and run it on a calculator, where
-the arithmetic is trivial so the mechanics are visible.
+This notebook introduces agents. An agent is a language model running in a loop with access to
+tools, which are ordinary Python functions that the model can ask your code to run on its
+behalf. The notebook explains how a tool is defined as a function together with a JSON schema,
+builds the ReAct loop from scratch in about thirty lines, and runs it on a calculator so that
+the mechanics of the loop stay visible.
 
 *12 cells · installs `google-genai`, `google-auth`*
 
 ### [Part 2 — Graphs, with LangGraph](notebooks/02_langgraph.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/02_langgraph.ipynb)
 
-**You decide, in code.** When a step is not optional — a result that must be checked before it
-is reported — asking the model nicely is not a guarantee. A graph moves the decision out of the
-prompt: typed state, nodes that transform it, and a router in ordinary Python. Built as
-compute → verify → repair, then deliberately broken to watch the bound hold.
+This notebook covers LangGraph, which is useful when the order of operations has to be
+guaranteed rather than left to the model. It explains state, nodes, edges and routers, and then
+builds a graph that computes an answer, verifies it, and repairs it when the check fails. The
+compute step is then broken deliberately to show that the verification step and the retry limit
+still hold.
 
 *11 cells · adds `langgraph`*
 
 ### [Part 3 — Conversational multi-agent, with AutoGen](notebooks/03_autogen.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/03_autogen.ipynb)
 
-**The conversation decides.** Several agents with different system prompts, talking in a shared
-transcript. Three of them — propose, object, judge — argue about a discretization for
-advection-dominated flow until the judge approves or a message cap stops them. Includes a note
-on `async`/`await`, which AutoGen requires and the other notebooks do not.
+This notebook covers AutoGen, which runs several agents with different system prompts and lets
+them talk to each other in a shared transcript. Three agents argue about which spatial
+discretization to use for advection-dominated flow: one proposes a method, one objects to it,
+and one judges whether the objection has been answered. The notebook also explains async and
+await, which AutoGen requires and the other notebooks do not.
 
 *13 cells · adds `autogen-agentchat`, `autogen-ext[openai]`*
 
 ### [Part 4 — MPC-style planning](notebooks/04_mpc.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/04_mpc.ipynb)
 
-**A simulator decides.** The model proposes candidate actions; a cheap forward model scores
-them, and only the winner costs a real evaluation. Finding the launch angle that maximises the
-range of a projectile with drag, where the surrogate is a quadratic fitted to what has already
-been measured. Also covers when this is the wrong tool.
+This notebook adapts model predictive control to an agent. The model proposes candidate actions
+and a cheap surrogate model scores them, so that only the best candidate costs a real
+simulation. The example finds the launch angle that maximizes the range of a projectile subject
+to air resistance, and the notebook also explains when this approach is not worth its
+complexity.
 
 *14 cells · installs `google-genai`, `google-auth`*
 
 ### [Part 5 — MCP](notebooks/05_mcp.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/05_mcp.ipynb)
 
-**Where the tools live.** The Model Context Protocol is a standard for exposing tools that run
-outside your process. We write a real server exposing a calculator and a scikit-fem Poisson
-solve, launch it as a subprocess, discover its tools at runtime, and drive it two ways: by hand,
-then from a ReAct loop where the published schemas become the model's tool list unmodified.
+This notebook covers the Model Context Protocol, which is a standard for exposing tools that
+run outside your own process. We write a server that publishes a calculator and a scikit-fem
+Poisson solver, run it as a separate process, and then connect to it in two ways: first by
+calling the tools directly, and then from a ReAct loop in which the model chooses which tool to
+use.
 
 *12 cells · adds `mcp`, `scikit-fem`*
 
 ### [Part 6 — Agent-driven adaptive mesh refinement](notebooks/06_agent_hackathon.ipynb) · [open in Colab](https://colab.research.google.com/github/natrask/AESCAPE/blob/main/notebooks/06_agent_hackathon.ipynb)
 
-The payoff. Poisson on an L-shaped domain, where the re-entrant corner makes uniform refinement
-converge slowly and adaptive refinement recovers the optimal rate. An agent gets seven
-mesh-manipulation tools and three system prompts drive it three ways: uniform refinement,
-Dörfler-marked adaptive refinement, and adaptive refinement that monitors its own convergence
-rate. A separate verifier agent then checks the result with a manufactured solution.
+This notebook applies an agent to a real numerical problem. We solve Poisson's equation on an
+L-shaped domain, where the re-entrant corner causes uniform mesh refinement to converge slowly
+while adaptive refinement recovers the optimal rate. The agent is given seven mesh-manipulation
+tools and is driven by three different system prompts, and a separate verifier agent then checks
+the result using a manufactured solution.
 
 *26 cells · adds `scikit-fem`, `sympy`*
 
 ---
 
-Every notebook ends with a **Further reading** section pointing at the primary sources for that
-pattern.
+Every notebook ends with a further reading section listing the primary sources for that topic.
 
 ---
 
