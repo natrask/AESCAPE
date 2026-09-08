@@ -10,7 +10,7 @@ Applications via Engineering Software 2.0 and 3.0*.
 | **Date** | Tuesday, September 8, 2026 |
 | **Venue** | Dallas/Fort Worth Airport Marriott, Dallas, TX |
 | **Instructors** | Nathaniel Trask (Penn), Miguel Bessa (Brown) |
-| **Links to other material** | Miguel Bessa — [3dasm short course](https://github.com/bessagroup/3dasm_course/tree/main/Lectures%2Fshort_course) · Steve Owen — TBD · Jake Koester — TBD |
+| **Links to other material** | Miguel Bessa — [3dasm short course](https://github.com/bessagroup/3dasm_course/tree/main/Lectures%2Fshort_course) · Steve Owen — TBD · Jake Koester — [agentic-cae-tutorial](https://github.com/aperijake/agentic-cae-tutorial) |
 
 ---
 
